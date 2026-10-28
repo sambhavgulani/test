@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jewelora – Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Croissant+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#3d1317; --bg-2:#2a0c10; --text:#fff; --muted:#bababa; --field:#fff; --field-text:#1a1a1a;
+  --placeholder:#828282; --line:#e6e6e6; --social:#eee; --social-text:#000; --accent:#000;
+  --error:#ff8a8a; --ok:#8be0a4; --radius:8px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  min-height:100%;background:radial-gradient(120% 80% at 50% 0%,var(--bg) 40%,var(--bg-2) 100%);
+  background-color:var(--bg);color:var(--text);font-family:'Inter',Helvetica,Arial,sans-serif;
+  display:flex;justify-content:center;align-items:center;padding:24px 16px;
+}
+.wrap{width:100%;max-width:430px;display:flex;flex-direction:column;align-items:center}
+.brand{text-align:center}
+.emblem{width:clamp(110px,32vw,170px);height:auto;filter:drop-shadow(0 6px 18px rgba(0,0,0,.35));animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.brand h2{font-family:'Croissant One',Georgia,serif;font-weight:400;font-size:clamp(38px,11vw,64px);letter-spacing:.02em;line-height:1.1;margin-top:8px}
+.card{width:100%;margin-top:clamp(20px,5vh,40px);text-align:center}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.1);border-radius:var(--radius);padding:4px;margin-bottom:20px;position:relative}
+.tabs button{all:unset;cursor:pointer;padding:9px 0;font-size:14px;font-weight:500;border-radius:6px;z-index:1;color:var(--muted);transition:color .2s}
+.tabs button[aria-selected="true"]{color:#000}
+.tabs .pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);background:#fff;border-radius:6px;transition:transform .25s ease}
+.tabs[data-mode="signup"] .pill{transform:translateX(100%)}
+.tabs button:focus-visible,.link:focus-visible,.btn:focus-visible,.eye:focus-visible,input:focus-visible,.social:focus-visible{outline:2px solid #fff;outline-offset:2px}
+h1{font-size:16px;font-weight:600;line-height:24px}
+.sub{font-size:14px;line-height:21px;margin-bottom:20px}
+form{display:flex;flex-direction:column;gap:12px;text-align:left}
+.field{position:relative}
+.field input{width:100%;height:44px;padding:8px 44px 8px 16px;background:var(--field);color:var(--field-text);border:1px solid #dfdfdf;border-radius:var(--radius);font:400 14px 'Inter',sans-serif;transition:border-color .2s,box-shadow .2s}
+.field input::placeholder{color:var(--placeholder)}
+.field input:focus{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.3)}
+.field.invalid input{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.3)}
+.field.valid input{border-color:#30a46c}
+.eye{all:unset;position:absolute;right:6px;top:6px;width:32px;height:32px;display:grid;place-items:center;cursor:pointer;color:#555;border-radius:6px}
+.eye svg{width:18px;height:18px}
+.err{min-height:18px;font-size:12.5px;color:var(--error);padding:4px 2px 0}
+.meter{display:none;gap:4px;margin-top:2px}
+.meter.show{display:flex}
+.meter i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.2);transition:background .2s}
+.meter[data-s="1"] i:nth-child(-n+1){background:#e5484d}
+.meter[data-s="2"] i:nth-child(-n+2){background:#f5a524}
+.meter[data-s="3"] i:nth-child(-n+3){background:#c3d94a}
+.meter[data-s="4"] i{background:#30a46c}
+.meter-label{display:none;font-size:12px;color:var(--muted);margin-top:4px}
+.meter-label.show{display:block}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+.row label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.row input[type=checkbox]{accent-color:#fff;width:16px;height:16px}
+.link{all:unset;cursor:pointer;color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:13px}
+.btn{all:unset;box-sizing:border-box;width:100%;height:44px;background:var(--accent);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:500;cursor:pointer;transition:transform .1s,background .2s}
+.btn:hover{background:#1c1c1c}.btn:active{transform:scale(.985)}
+.btn[disabled]{opacity:.75;cursor:progress}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:none}
+.btn.loading .spin{display:block}
+@keyframes rot{to{transform:rotate(360deg)}}
+.divider{display:flex;align-items:center;gap:8px;margin:20px 0;font-size:14px;color:#cfcfcf}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.25)}
+.socials{display:flex;flex-direction:column;gap:12px}
+.social{all:unset;box-sizing:border-box;width:100%;height:46px;background:var(--social);color:var(--social-text);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s,transform .1s}
+.social:hover{background:#fff}.social:active{transform:scale(.985)}
+.social svg{width:20px;height:20px}
+.terms{margin-top:24px;font-size:13px;line-height:21px;color:var(--muted);text-align:center}
+.terms a{color:#fff;text-decoration:none}.terms a:hover{text-decoration:underline}
+.status{min-height:20px;margin-top:14px;font-size:13.5px;text-align:center}
+.status.ok{color:var(--ok)}.status.bad{color:var(--error)}
+.hidden{display:none}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:360px){body{padding:16px 12px}}
+@media (min-width:900px){
+  .wrap{max-width:460px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+}
+@media (max-height:700px) and (orientation:landscape){body{align-items:flex-start}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="brand">
+    <svg class="emblem" viewBox="0 0 200 200" role="img" aria-label="Jewelora diamond emblem">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e9b8c0"/></linearGradient>
+        <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6d3d8"/><stop offset="1" stop-color="#b5646f"/></linearGradient>
+      </defs>
+      <path d="M50 55h100l30 35-80 90-80-90z" fill="url(#g1)" opacity=".95"/>
+      <path d="M20 90h160l-80 90z" fill="url(#g2)"/>
+      <path d="M50 55l-30 35h160l-30-35M70 90l30-35 30 35M70 90l30 90 30-90" fill="none" stroke="#3d1317" stroke-width="3" stroke-linejoin="round" opacity=".55"/>
+    </svg>
+    <h2>JEWELORA</h2>
+  </header>
+
+  <section class="card" aria-labelledby="title">
+    <div class="tabs" id="tabs" data-mode="signin" role="tablist" aria-label="Account mode">
+      <span class="pill"></span>
+      <button type="button" role="tab" id="tab-signin" aria-selected="true" data-mode="signin">Sign in</button>
+      <button type="button" role="tab" id="tab-signup" aria-selected="false" data-mode="signup">Create account</button>
+    </div>
+
+    <h1 id="title">Welcome back</h1>
+    <p class="sub" id="subtitle">Enter your email and password to sign in</p>
+
+    <form id="form" novalidate>
+      <div>
+        <div class="field" id="f-email">
+          <label class="sr-only" for="email">Email address</label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="email@domain.com" aria-describedby="e-email" required>
+        </div>
+        <div class="err" id="e-email" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <div class="field" id="f-pass">
+          <label class="sr-only" for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" aria-describedby="e-pass" required>
+          <button type="button" class="eye" id="eye" aria-label="Show password" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path id="eye-path" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path id="eye-slash" class="hidden" d="M3 3l18 18"/></svg>
+          </button>
+        </div>
+        <div class="meter" id="meter"><i></i><i></i><i></i><i></i></div>
+        <div class="meter-label" id="meter-label"></div>
+        <div class="err" id="e-pass" aria-live="polite"></div>
+      </div>
+
+      <div class="row" id="row-signin">
+        <label><input type="checkbox" id="remember"> Remember me</label>
+        <button type="button" class="link" id="forgot">Forgot password?</button>
+      </div>
+
+      <button class="btn" id="submit" type="submit"><span class="spin" aria-hidden="true"></span><span id="submit-text">Sign in</span></button>
+    </form>
+
+    <div class="divider" aria-hidden="true">or</div>
+
+    <div class="socials">
+      <button class="social" type="button" data-provider="Google" aria-label="Continue with Google">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
+        Continue with Google
+      </button>
+      <button class="social" type="button" data-provider="Apple" aria-label="Continue with Apple">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#000" d="M16.4 12.6c0-2.4 2-3.5 2.1-3.6-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.800 2.500 3.100 2.400 1.200 0 1.700-.8 3.200-.8s1.900.8 3.200.8c1.300 0 2.200-1.200 3-2.400.9-1.400 1.300-2.700 1.300-2.800 0 0-2.600-1-2.700-4zM14 5.400c.7-.8 1.100-1.900 1-3-1 0-2.100.7-2.800 1.500-.6.700-1.200 1.800-1 2.900 1.100.1 2.100-.6 2.800-1.400z"/></svg>
+        Continue with Apple
+      </button>
+    </div>
+
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+
+    <p class="terms">By clicking continue, you agree to our <a href="#terms-of-service">Terms of Service</a> and <a href="#privacy-policy">Privacy Policy</a></p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $('form'), email = $('email'), pass = $('password'), status = $('status');
+  var mode = 'signin';
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  var copy = {
+    signin: { title: 'Welcome back', sub: 'Enter your email and password to sign in', btn: 'Sign in', auto: 'current-password', ph: 'Password' },
+    signup: { title: 'Create an account', sub: 'Enter your email to sign up', btn: 'Create account', auto: 'new-password', ph: 'Create a password (8+ characters)' }
+  };
+
+  function setStatus(msg, kind) {
+    status.textContent = msg || '';
+    status.className = 'status' + (kind ? ' ' + kind : '');
+  }
+  function mark(fieldId, errId, msg) {
+    var f = $(fieldId);
+    $(errId).textContent = msg || '';
+    f.classList.toggle('invalid', !!msg);
+    f.classList.toggle('valid', !msg && f.querySelector('input').value.length > 0);
+  }
+  function checkEmail(show) {
+    var v = email.value.trim(), msg = '';
+    if (!v) msg = 'Please enter your email address.';
+    else if (!emailRe.test(v)) msg = 'That email doesn’t look right.';
+    if (show) mark('f-email', 'e-email', msg);
+    return !msg;
+  }
+  function score(p) {
+    var s = 0;
+    if (p.length >= 8) s++;
+    if (/[a-z]/.test(p) && /[A-Z]/.test(p)) s++;
+    if (/\d/.test(p)) s++;
+    if (/[^A-Za-z0-9]/.test(p) || p.length >= 14) s++;
+    return p ? Math.max(1, s) : 0;
+  }
+  function checkPass(show) {
+    var v = pass.value, msg = '';
+    if (!v) msg = 'Please enter your password.';
+    else if (mode === 'signup' && v.length < 8) msg = 'Use at least 8 characters.';
+    if (show) mark('f-pass', 'e-pass', msg);
+    return !msg;
+  }
+  function updateMeter() {
+    var s = mode === 'signup' ? score(pass.value) : 0;
+    $('meter').classList.toggle('show', mode === 'signup' && s > 0);
+    $('meter').setAttribute('data-s', s);
+    var lbl = $('meter-label');
+    lbl.classList.toggle('show', mode === 'signup' && s > 0);
+    lbl.textContent = ['', 'Weak password', 'Fair password', 'Good password', 'Strong password'][s];
+  }
+
+  function setMode(m) {
+    mode = m;
+    $('tabs').setAttribute('data-mode', m);
+    $('tab-signin').setAttribute('aria-selected', m === 'signin');
+    $('tab-signup').setAttribute('aria-selected', m === 'signup');
+    var c = copy[m];
+    $('title').textContent = c.title;
+    $('subtitle').textContent = c.sub;
+    $('submit-text').textContent = c.btn;
+    pass.autocomplete = c.auto;
+    pass.placeholder = c.ph;
+    $('row-signin').classList.toggle('hidden', m !== 'signin');
+    mark('f-email', 'e-email', ''); mark('f-pass', 'e-pass', '');
+    $('f-email').classList.remove('valid'); $('f-pass').classList.remove('valid');
+    setStatus('');
+    updateMeter();
+  }
+
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.dataset.mode); });
+  });
+
+  email.addEventListener('blur', function () { if (email.value) checkEmail(true); });
+  email.addEventListener('input', function () { if ($('f-email').classList.contains('invalid')) checkEmail(true); });
+  pass.addEventListener('input', function () {
+    updateMeter();
+    if ($('f-pass').classList.contains('invalid')) checkPass(true);
+  });
+
+  $('eye').addEventListener('click', function () {
+    var show = pass.type === 'password';
+    pass.type = show ? 'text' : 'password';
+    this.setAttribute('aria-pressed', show);
+    this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    $('eye-slash').classList.toggle('hidden', !show);
+  });
+
+  $('forgot').addEventListener('click', function () {
+    if (!checkEmail(true)) { email.focus(); setStatus('Enter your email first and we’ll send a reset link.', 'bad'); return; }
+    setStatus('If an account exists for ' + email.value.trim() + ', a reset link is on its way.', 'ok');
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var okE = checkEmail(true), okP = checkPass(true);
+    if (!okE || !okP) {
+      form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+      (okE ? pass : email).focus();
+      setStatus('Please fix the highlighted fields.', 'bad');
+      return;
+    }
+    var btn = $('submit');
+    btn.disabled = true; btn.classList.add('loading'); setStatus('');
+    // Demo only: replace this timeout with your real authentication request.
+    setTimeout(function () {
+      btn.disabled = false; btn.classList.remove('loading');
+      setStatus(mode === 'signin'
+        ? 'Welcome back! Signed in as ' + email.value.trim() + '.'
+        : 'Thanks! We’ll continue with ' + email.value.trim() + '.', 'ok');
+    }, 1100);
+  });
+
+  document.querySelectorAll('.social').forEach(function (b) {
+    b.addEventListener('click', function () {
+      setStatus('Continue with ' + b.dataset.provider + ' selected.', 'ok');
+    });
+  });
+})();
+</script>
+</body>
+</html>
